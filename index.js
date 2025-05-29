@@ -2,13 +2,30 @@
 //Main Entry Point of the Express Server App//
 //----------------------------------------------------------------//
 //Require Express Module for running the Express Server
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
 const express = require("express");
+const app = express();
+// Make sure logs directory exists
+const logDirectory = '/var/log/todoapp'
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+
+// Create a rotating write stream
+const accessLogStream = fs.createWriteStream(
+  path.join(logDirectory, 'access.log'), { flags: 'a' }
+);
+
+// Add morgan middleware
+app.use(morgan('combined', { stream: accessLogStream }));
+app.use(morgan('dev')); // also logs to terminal
+
 //Create Port
 const port = process.env.PORT || 8000;
 //Create Express App for Request-Response Cycle & to create the Express Server
-const app = express();
+//const app = express();
 //Require Module Path for Directory
-const path = require("path");
+//const path = require("path");
 //Requires the index.js - Route File, from the Routes Folder
 const route = require("./routes/index.js");
 //Requires express-ej-layouts Module

@@ -1,7 +1,9 @@
+//Require the Dotenv Library
+
 //Require the Mongoose Library
 const mongoose = require("mongoose");
 //Require the Environment File for getting the Environment Variables
-const env = require("./environment");
+//const env = require("../.env");
 
 let db;
 
@@ -9,7 +11,7 @@ let db;
 const Development = async () => {
 	try {
 		//Connect to the Database
-		mongoose.connect(`${env.db}`);
+		mongoose.connect('mongodb://localhost/todo_list');
 		//Acquire the Connection
 		db = mongoose.connection;
 		//If Error
@@ -29,7 +31,7 @@ const Production = async () => {
 	try {
 		const options = { useNewUrlParser: true, useUnifiedTopology: true };
 		//Connect to the Database
-		await mongoose.connect(`${env.db}`, options);
+		await mongoose.connect('mongodb://localhost/todo_list', options);
 		//Acquire the Connection
 		db = mongoose.connection;
 		//If Successful
@@ -43,17 +45,7 @@ const Production = async () => {
 //Establishes the Connection based on the Environment
 const EstablishConnection = async () => {
 	try {
-		if (env.name === "development" && env.deployment === "local") {
-			await Development();
-		} else if (env.name === "production" && env.deployment === "local") {
-			await Development();
-		} else if (env.name === "production" && env.deployment === "AWS") {
-			await Development();
-		} else if (env.name === "production" && env.deployment === "Heroku") {
-			await Production();
-		} else if (env.name === "production" && env.deployment === "other") {
-			await Production();
-		}
+		await Development();
 		if (!db) console.log("Connection Error");
 	} catch (error) {
 		console.log(error);
